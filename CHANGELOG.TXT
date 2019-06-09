@@ -1,3 +1,6 @@
+13
+Corrigé bugs silencieux avec memset().
+
 12
 Harmonisation avec les fichiers communs à VPower V8, VNav V24 et VMeasure V18.
 

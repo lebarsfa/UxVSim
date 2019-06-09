@@ -147,7 +147,7 @@ int GetValueProbe(PROBE* pProbe, int data_reg_l, double* pValue)
 		return EXIT_FAILURE;
 	}
 
-	// Display and analyse received data.
+	// Display and analyze received data.
 	//printf("Received : \"%s\"\n", recvbuf);
 
 	// Check CRC-16.

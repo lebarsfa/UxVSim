@@ -138,7 +138,7 @@ typedef struct COMPASS COMPASS;
 
 void SetMTChecksum(unsigned char* buf, int buflen);
 int CheckMTChecksum(unsigned char* buf, int buflen);
-int AnalyseMTMessage(unsigned char* buf, int buflen, int addr, int mid);
+int AnalyzeMTMessage(unsigned char* buf, int buflen, int addr, int mid);
 int FindMTMessage(unsigned char* buf, int buflen, int addr, int mid, unsigned char** pFoundmsg, int* pFoundmsglen);
 int FindLatestMTMessage(unsigned char* buf, int buflen, int addr, int mid, unsigned char** pFoundmsg, int* pFoundmsglen);
 int GetMTMessageCompass(COMPASS* pCompass, int addr, int mid, unsigned char* databuf, int databuflen, int* pNbdatabytes);

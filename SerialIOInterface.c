@@ -128,7 +128,7 @@ int SetRelaySerialIOInterface(SERIALIOINTERFACE* pSerialIOInterface, int channel
 
 	mSleep(10);
 
-	// Display and analyse received data.
+	// Display and analyze received data.
 	//printf("Received : \"%s\"\n", recvbuf);
 	if (sscanf(recvbuf, "%d", &state) != 1)
 	{
@@ -201,7 +201,7 @@ int SetDigitalRelaySerialIOInterface(SERIALIOINTERFACE* pSerialIOInterface, int 
 
 	mSleep(10);
 
-	// Display and analyse received data.
+	// Display and analyze received data.
 	//printf("Received : \"%s\"\n", recvbuf);
 	if (sscanf(recvbuf, "%d", &state) != 1)
 	{
@@ -249,7 +249,7 @@ int GetAnalogInputSerialIOInterface(SERIALIOINTERFACE* pSerialIOInterface, int c
 
 	mSleep(10);
 
-	// Display and analyse received data.
+	// Display and analyze received data.
 	//printf("Received : \"%s\"\n", recvbuf);
 	if (sscanf(recvbuf, "%d", pValue) != 1)
 	{
@@ -290,7 +290,7 @@ int GetDigitalInputSerialIOInterface(SERIALIOINTERFACE* pSerialIOInterface, int 
 
 	mSleep(10);
 
-	// Display and analyse received data.
+	// Display and analyze received data.
 	//printf("Received : \"%s\"\n", recvbuf);
 	if (sscanf(recvbuf, "%d", pValue) != 1)
 	{

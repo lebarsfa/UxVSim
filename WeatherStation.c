@@ -136,7 +136,7 @@ int GetDataWeatherStation(WEATHERSTATION* pWeatherStation, double* pLatitude, do
 		if (!(ptr_GPGGA && ptr_HCHDG && ptr_WIMDA)) return EXIT_FAILURE;
 	}
 
-	// Display and analyse received data.
+	// Display and analyze received data.
 	//printf("Received : \"%s\"\n", recvbuf);
 
 	// GPS data.

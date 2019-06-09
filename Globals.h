@@ -23,7 +23,7 @@ extern int loop_sleep_time;
 extern double lat0, long0;	
 
 // State variables.
-extern double x, y , theta, v, omega, phi, phiPoint, 
+extern double x, y, theta, v, omega, phi, phiPoint, 
 deltag, deltavmax;
 
 // Parameters.

@@ -85,7 +85,7 @@ int CheckMTChecksum(unsigned char* buf, int buflen)
 	return EXIT_SUCCESS;
 }
 
-int AnalyseMTMessage(unsigned char* buf, int buflen, int addr, int mid)
+int AnalyzeMTMessage(unsigned char* buf, int buflen, int addr, int mid)
 {
 	// Check number of bytes.
 	if (buflen < MIN_STANDARD_BUF_LEN_COMPASS)
@@ -137,7 +137,7 @@ int FindMTMessage(unsigned char* buf, int buflen, int addr, int mid, unsigned ch
 	*pFoundmsg = buf;
 	*pFoundmsglen = buflen;
 
-	while (AnalyseMTMessage(*pFoundmsg, *pFoundmsglen, addr, mid) != EXIT_SUCCESS)
+	while (AnalyzeMTMessage(*pFoundmsg, *pFoundmsglen, addr, mid) != EXIT_SUCCESS)
 	{
 		(*pFoundmsg)++;
 		(*pFoundmsglen)--;
@@ -357,7 +357,7 @@ int InitCompass(COMPASS* pCompass)
 		return EXIT_FAILURE;	
 	}
 
-	// Analyse the configuration returned.
+	// Analyze the configuration returned.
 	OutputMode.c[0] = databuf[105];
 	OutputMode.c[1] = databuf[104];
 	OutputSettings.c[0] = databuf[109];
@@ -404,7 +404,7 @@ int GetMTDataCompass(COMPASS* pCompass, MTDATA* pMTData)
 		return EXIT_FAILURE;	
 	}
 
-	// Analyse data.
+	// Analyze data.
 	if (pCompass->OutputMode & RAW_BIT)
 	{
 		// Un-calibrated RAW inertial data output mode.
