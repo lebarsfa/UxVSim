@@ -18,6 +18,7 @@ inline int LoadConfig()
 	char line[MAX_BUF_LEN];
 
 	// Default values.
+	robid = SAILBOAT2_ROBID;
 	bEnableSimulator = 1;
 	bEmbeddedCom = 1;
 	bResetFiles = 1;
@@ -48,18 +49,18 @@ inline int LoadConfig()
 	Jx = 12.5; Jz = 50.0; // Inertial moments.
 	rg = 1.5; // Distance from the rudder to G (in m).
 	rv = 0.5; // Distance from the mast to G (in m).
-	l = 0.5; // Distance from the sail center of pressure to the mast (in m).
+	l = 0.5; // Distance from the im483i center of pressure to the mast (in m).
 	alphatheta = 125.0; // Yaw friction coefficient.
 	alphaf = 20.0; // Forward friction coefficient.
 	alphag = 75.0; // Rudder force coefficient.
 	alphav = 30.0; // Sail force coefficient.
 	alphaphi = 40.0; // Roll friction coefficient.
 	alphaw = 50.0; // Perturbations due to waves coefficient.
-	hv = 2.0; // Distance from the sail center of pressure to G (in m).
+	hv = 2.0; // Distance from the im483i center of pressure to G (in m).
 	leq = 0.2; // Length of the equivalent pendulum in roll (in m).
 
-	deltavminreal = 0.30; // Min equivalent opening angle of the real sail (in rad).
-	deltavmaxreal = 1.20; // Max equivalent opening angle of the real sail (en rad).
+	deltavminreal = 0.30; // Min equivalent opening angle of the real im483i (in rad).
+	deltavmaxreal = 1.20; // Max equivalent opening angle of the real im483i (en rad).
 
 	// Wind.
 	V_med = 7.0; // Wind speed (in m/s).
@@ -79,12 +80,14 @@ inline int LoadConfig()
 
 	// Measurement errors.
 	gps_error = 0.5; // GPS error (in m).
-	compass_error = 0.1; // Compass error (in rad).
+	mt_error = 0.1; // Compass error (in rad).
 
 	// Load data from a file.
 	file = fopen("UxVSim.txt", "r");
 	if (file != NULL)
 	{
+		if (fgets3(file, line, sizeof(line)) == NULL) printf("Invalid configuration file.\n");
+		if (sscanf(line, "%i", &robid) != 1) printf("Invalid configuration file.\n");
 		if (fgets3(file, line, sizeof(line)) == NULL) printf("Invalid configuration file.\n");
 		if (sscanf(line, "%d", &bEnableSimulator) != 1) printf("Invalid configuration file.\n");
 		if (fgets3(file, line, sizeof(line)) == NULL) printf("Invalid configuration file.\n");
@@ -180,7 +183,7 @@ inline int LoadConfig()
 		if (fgets3(file, line, sizeof(line)) == NULL) printf("Invalid configuration file.\n");
 		if (sscanf(line, "%lf", &gps_error) != 1) printf("Invalid configuration file.\n");
 		if (fgets3(file, line, sizeof(line)) == NULL) printf("Invalid configuration file.\n");
-		if (sscanf(line, "%lf", &compass_error) != 1) printf("Invalid configuration file.\n");
+		if (sscanf(line, "%lf", &mt_error) != 1) printf("Invalid configuration file.\n");
 
 		if (fclose(file) != EXIT_SUCCESS) printf("fclose() failed.\n");
 	}

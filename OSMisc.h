@@ -75,6 +75,13 @@ Debug macros specific to OSMisc.
 #endif // _WIN32
 #endif // !DISABLE_USER_INPUT_FUNCTIONS
 
+#ifndef DISABLE_REBOOT_FUNCTIONS
+#ifdef _WIN32
+#else 
+#include <sys/reboot.h>
+#endif // _WIN32
+#endif // !DISABLE_REBOOT_FUNCTIONS
+
 //// To check...
 //#ifdef __GNUC__
 //#define _stricmp strcasecmp
@@ -136,13 +143,12 @@ inline double sqr(double x)
 #define SIGN_DEFINED
 #ifndef sign
 /*
-Return x/epsilon if x is between -epsilon and epsilon or -1 if x is negative, 
-+1 if x is positive.
+Return +1 if x is positive, -1 if x is negative or x/epsilon if x is between -epsilon and epsilon.
 
 double x : (IN) Value.
 double epsilon : (IN) Threshold.
 
-Return : -1, +1 or x/epsilon.
+Return : +1, -1 or x/epsilon.
 */
 inline double sign(double x, double epsilon)
 { 
@@ -174,6 +180,29 @@ inline double quantification(double v, double step)
 	//q = q >= 0? floor(v/step+0.5): ceil(v/step-0.5);
 	//q = q*step;
 	return floor(v/step+0.5)*step;
+}
+
+// In rad.
+inline void quaternion2euler(double qw, double qx, double qy, double qz, double* pRoll, double* pPitch, double* pYaw)
+{
+	*pRoll = atan2(2*qy*qz+2*qw*qx, 2*sqr(qw)+2*sqr(qz)-1);
+	*pPitch = -asin(constrain(2*qx*qz-2*qw*qy, -1, 1)); // Attempt to avoid potential NAN...
+	*pYaw = atan2(2*qx*qy+2*qw*qz, 2*sqr(qw)+2*sqr(qx)-1);
+}
+
+// In rad.
+inline void euler2quaternion(double roll, double pitch, double yaw, double* pQw, double* pQx, double* pQy, double* pQz)
+{
+	double t0 = cos(yaw * 0.5);
+	double t1 = sin(yaw * 0.5);
+	double t2 = cos(roll * 0.5);
+	double t3 = sin(roll * 0.5);
+	double t4 = cos(pitch * 0.5);
+	double t5 = sin(pitch * 0.5);
+	*pQw = t0 * t2 * t4 + t1 * t3 * t5;
+	*pQx = t0 * t3 * t4 - t1 * t2 * t5;
+	*pQy = t0 * t2 * t5 + t1 * t3 * t4;
+	*pQz = t1 * t2 * t4 - t0 * t3 * t5;
 }
 
 /*
@@ -935,7 +964,7 @@ inline char* strstrbeginend(char* str, char* beginpattern, char* endpattern, cha
 		*pOutstrlen = 0;
 		return NULL;
 	}
-	*pOutstrlen = ptr2-(ptr+strlen(beginpattern));
+	*pOutstrlen = (int)(ptr2-(ptr+strlen(beginpattern)));
 	if (*pOutstrlen < 0)
 	{
 		*pOut = NULL;
@@ -966,7 +995,7 @@ inline char* stristrbeginend(char* str, char* beginpattern, char* endpattern, ch
 		*pOutstrlen = 0;
 		return NULL;
 	}
-	*pOutstrlen = ptr2-(ptr+strlen(beginpattern));
+	*pOutstrlen = (int)(ptr2-(ptr+strlen(beginpattern)));
 	if (*pOutstrlen < 0)
 	{
 		*pOut = NULL;
@@ -1591,26 +1620,180 @@ inline void RGB2HSL_MSPaint(double red, double green, double blue, double* pH, d
 
 	if (maxval != minval)
 	{
-		double rnorm = (maxval-red)/mdiff;
-		double gnorm = (maxval-green)/mdiff;
-		double bnorm = (maxval-blue)/mdiff;
-		saturation = (luminance <= 0.5)?(mdiff/msum):(mdiff/(510.0-msum));
+		double tmp = 60.0/mdiff;
 		if (red == maxval)
-			hue = 60.0*(6.0+bnorm-gnorm);
-		if (green == maxval)
-			hue = 60.0*(2.0+rnorm-bnorm);
-		if (blue == maxval)
-			hue = 60.0*(4.0+gnorm-rnorm);
-		if (hue > 360.0)
-			hue -= 360.0;
+		{
+			hue = (green-blue)*tmp;
+			if (hue < 0) hue += 360.0;
+		}
+		else if (green == maxval)
+			hue = (blue-red)*tmp+120.0;
+		else if (blue == maxval)
+			hue = (red-green)*tmp+240.0;
+		saturation = (luminance <= 0.5)? (mdiff/msum): (mdiff/(510.0-msum));
 	}
 
 	// Microsoft Paint limits for H,S,L are 0..240.
 
-	*pH = hue*240.0/360.0; 
-	*pS = saturation*240.0; 
+	*pH = hue*240.0/360.0;
+	*pS = saturation*240.0;
 	*pL = luminance*240.0;
 }
+
+/*
+Convert from HSV to RGB.
+
+double hue : (IN) Hue between 0..240.
+double saturation : (IN) Saturation between 0..240.
+double value : (IN) Value between 0..240.
+double* pR : (OUT) Pointer to the red between 0..255.
+double* pG : (OUT) Pointer to the green between 0..255.
+double* pB : (OUT) Pointer to the blue between 0..255.
+
+Return : Nothing.
+*/
+inline void HSV2RGB_MSPaint_Fake(double hue, double saturation, double value, double* pR, double* pG, double* pB)
+{
+
+	// From https://fr.wikipedia.org/wiki/Teinte_Saturation_Valeur,
+	// https://en.wikipedia.org/wiki/HSL_and_HSV and https://stackoverflow.com/questions/51203917/math-behind-hsv-to-rgb-conversion-of-colors.
+
+	int ti = 0;
+	double l = 0, m = 0; //, f = 0, n = 0;
+
+	hue = hue*360.0/240.0;
+	saturation = saturation/240.0;
+	value = value/240.0;
+
+	ti = ((int)floor(hue/60.0))%6;
+	//f = (hue/60.0)-ti;
+	l = value*(1-saturation);
+	m = value*(1-saturation*fabs(fmod(hue/60.0, 2)-1));
+	//m = value*(1-f*saturation);
+	//n = value*(1-(1-f)*saturation);
+
+	switch (ti)
+	{
+	case 0:
+		*pR = value*255.0;
+		*pG = m*255.0; //*pG = n*255.0;
+		*pB = l*255.0;
+		break;
+	case 1:
+		*pR = m*255.0;
+		*pG = value*255.0;
+		*pB = l*255.0;
+		break;
+	case 2:
+		*pR = l*255.0;
+		*pG = value*255.0;
+		*pB = m*255.0; //*pB = n*255.0;
+		break;
+	case 3:
+		*pR = l*255.0;
+		*pG = m*255.0;
+		*pB = value*255.0;
+		break;
+	case 4:
+		*pR = m*255.0; //*pR = n*255.0;
+		*pG = l*255.0;
+		*pB = value*255.0;
+		break;
+	case 5:
+		*pR = value*255.0;
+		*pG = l*255.0;
+		*pB = m*255.0;
+		break;
+	default:
+		*pR = 0;
+		*pG = 0;
+		*pB = 0;
+		break;
+	}
+}
+
+/*
+Convert from RGB to HSV.
+
+double red : (IN) Red between 0..255.
+double green : (IN) Green between 0..255.
+double blue : (IN) Blue between 0..255.
+double* pH : (OUT) Pointer to the hue between 0..240.
+double* pS : (OUT) Pointer to the saturation between 0..240.
+double* pV : (OUT) Pointer to the value between 0..240.
+
+Return : Nothing.
+*/
+inline void RGB2HSV_MSPaint_Fake(double red, double green, double blue, double* pH, double* pS, double* pV)
+{
+
+	// From https://fr.wikipedia.org/wiki/Teinte_Saturation_Valeur.
+
+	double minval = min(red, min(green, blue));
+	double maxval = max(red, max(green, blue));
+	double mdiff = maxval-minval;
+	double hue = 0.0;
+	double saturation = (maxval == 0)? 0: (1-minval/maxval);
+	double value = maxval/255.0;
+
+	if (maxval != minval)
+	{
+		double tmp = 60.0/mdiff;
+		if (red == maxval)
+		{
+			hue = (green-blue)*tmp;
+			if (hue < 0) hue += 360.0;
+		}
+		else if (green == maxval)
+			hue = (blue-red)*tmp+120.0;
+		else if (blue == maxval)
+			hue = (red-green)*tmp+240.0;
+	}
+
+	*pH = hue*240.0/360.0;
+	*pS = saturation*240.0;
+	*pV = value*240.0;
+}
+
+#ifndef DISABLE_REBOOT_FUNCTIONS
+inline void RebootComputer(void)
+{
+#ifdef _WIN32
+
+	// https://docs.microsoft.com/fr-fr/windows/desktop/Shutdown/displaying-the-shutdown-dialog-box
+
+	HANDLE hToken;              // handle to process token 
+	TOKEN_PRIVILEGES tkp;       // pointer to token structure 
+
+	// Get the current process token handle so we can get shutdown privilege.  
+	OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
+
+	// Get the LUID for shutdown privilege.  
+	LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid);
+
+	tkp.PrivilegeCount = 1; // One privilege to set.  
+	tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+	// Get shutdown privilege for this process.  
+	AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0);
+
+	if (!InitiateSystemShutdown(NULL, NULL, 0, TRUE, TRUE))
+	{
+		PRINT_DEBUG_ERROR_OSMISC(("RebootComputer error (%s) : %s\n", strtime_m(), GetLastErrorMsg()));
+	}
+
+	// Disable shutdown privilege.  
+	tkp.Privileges[0].Attributes = 0;
+	AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0);
+#else
+	sync();
+	if (reboot(RB_AUTOBOOT) < 0)
+	{
+		PRINT_DEBUG_ERROR_OSMISC(("RebootComputer error (%s) : %s\n", strtime_m(), GetLastErrorMsg()));
+	}
+#endif // _WIN32
+}
+#endif // !DISABLE_REBOOT_FUNCTIONS
 
 /*
 Wait for the user to press the ENTER key.

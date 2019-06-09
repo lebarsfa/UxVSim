@@ -183,6 +183,7 @@ THREAD_PROC_RETURN_VALUE NMEAInterfaceThread(void* pParam)
 
 	if (LaunchSingleCliTCPSrv("4001", handlenmeainterfacecli, NULL) != EXIT_SUCCESS)
 	{
+		printf("Error launching the NMEAInterface server.\n");
 		exit(EXIT_FAILURE);
 	}
 

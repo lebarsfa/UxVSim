@@ -155,6 +155,7 @@ THREAD_PROC_RETURN_VALUE PololuInterfaceThread(void* pParam)
 
 	if (LaunchSingleCliTCPSrv("4004", handlepololuinterfacecli, NULL) != EXIT_SUCCESS)
 	{
+		printf("Error launching the PololuInterface server.\n");
 		exit(EXIT_FAILURE);
 	}
 

@@ -136,6 +136,7 @@ THREAD_PROC_RETURN_VALUE MESInterfaceThread(void* pParam)
 
 	if (LaunchSingleCliTCPSrv("4008", handlemesinterfacecli, NULL) != EXIT_SUCCESS)
 	{
+		printf("Error launching the MESInterface server.\n");
 		exit(EXIT_FAILURE);
 	}
 

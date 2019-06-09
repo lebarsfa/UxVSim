@@ -72,6 +72,9 @@
     <ClCompile Include="OntrackInterface.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SBGInterface.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h">
@@ -144,6 +147,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NMEAProtocol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SBGInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SBG.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RS232Port.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,2 +1,8 @@
+3
+Added SBGInterface.
+
+2
+Added robid parameter to support several robots.
+
 1
 Initial version from VSim V13.

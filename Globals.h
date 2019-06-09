@@ -13,6 +13,11 @@
 #include "OSNet.h"
 #include "OSMisc.h"
 
+#define MOTORBOAT_ROBID               0x00000400
+#define VAIMOS_ROBID                  0x00002000
+#define SAILBOAT_ROBID                0x00004000
+#define SAILBOAT2_ROBID               0x00008000
+
 // Other.
 extern int bEnableSimulator, bEmbeddedCom, bResetFiles, bRealTime;
 extern int loop_sleep_time;
@@ -23,6 +28,7 @@ extern double x, y, theta, v, omega, phi, phiPoint,
 deltag, deltavmax;
 
 // Parameters.
+extern int robid;
 extern double m, Jx, Jz, rg, rv, l, 
 alphatheta, alphaf, alphag, alphav, alphaphi, alphaw, 
 hv, leq, deltavminreal, deltavmaxreal;
@@ -37,7 +43,7 @@ extern double Vc, Vc_med, Vc_var, psic, psic_med, psic_var;
 extern double hw, hw_var;
 
 // Measurement errors.
-extern double gps_error, compass_error;
+extern double gps_error, mt_error;
 
 extern FILE* logsimfile;
 extern char logsimfilename[MAX_BUF_LEN];

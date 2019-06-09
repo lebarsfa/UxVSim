@@ -170,6 +170,7 @@ THREAD_PROC_RETURN_VALUE OntrackInterfaceThread(void* pParam)
 
 	if (LaunchSingleCliTCPSrv("4002", handleserialiointerfacecli, NULL) != EXIT_SUCCESS)
 	{
+		printf("Error launching the OntrackInterface server.\n");
 		exit(EXIT_FAILURE);
 	}
 

@@ -225,6 +225,7 @@ THREAD_PROC_RETURN_VALUE ProbeInterfaceThread(void* pParam)
 
 	if (LaunchSingleCliTCPSrv("4008", handleprobeinterfacecli, NULL) != EXIT_SUCCESS)
 	{
+		printf("Error launching the ProbeInterface server.\n");
 		exit(EXIT_FAILURE);
 	}
 

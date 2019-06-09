@@ -203,6 +203,7 @@ THREAD_PROC_RETURN_VALUE RazorAHRSInterfaceThread(void* pParam)
 
 	if (LaunchSingleCliTCPSrv("4007", handleclirazorahrs, NULL) != EXIT_SUCCESS)
 	{
+		printf("Error launching the RazorInterface server.\n");
 		exit(EXIT_FAILURE);
 	}
 

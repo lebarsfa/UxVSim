@@ -209,6 +209,7 @@ THREAD_PROC_RETURN_VALUE MTInterfaceThread(void* pParam)
 
 	if (LaunchSingleCliTCPSrv("4007", handlemtinterfacecli, NULL) != EXIT_SUCCESS)
 	{
+		printf("Error launching the MTInterface server.\n");
 		exit(EXIT_FAILURE);
 	}
 

@@ -158,6 +158,7 @@ THREAD_PROC_RETURN_VALUE IM483IInterfaceThread(void* pParam)
 
 	if (LaunchSingleCliTCPSrv("4003", handleim483icli, NULL) != EXIT_SUCCESS)
 	{
+		printf("Error launching the IM483IInterface server.\n");
 		exit(EXIT_FAILURE);
 	}
 

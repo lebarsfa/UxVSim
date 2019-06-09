@@ -78,7 +78,7 @@ int handlessc32interfacecli(SOCKET sockcli, void* pParam)
 			}
 			if (sscanf(databuf, "#0P%d\r", &pw) == 1)
 			{
-				// Convert rudder pulse width (in us) into angle (in rad).
+				// Convert ssc32 pulse width (in us) into angle (in rad).
 				angle = (pw-MID_PW_RUDDER)*(MAX_ANGLE_RUDDER-MIN_ANGLE_RUDDER)/(MAX_PW_RUDDER-MIN_PW_RUDDER);
 				GetTimeElapsedChrono(&chrono, &t);
 				if (fprintf(file, "%f;%f;\n", t, angle) <= 0)
@@ -118,6 +118,7 @@ THREAD_PROC_RETURN_VALUE SSC32InterfaceThread(void* pParam)
 
 	if (LaunchSingleCliTCPSrv("4004", handlessc32interfacecli, NULL) != EXIT_SUCCESS)
 	{
+		printf("Error launching the SSC32Interface server.\n");
 		exit(EXIT_FAILURE);
 	}
 
