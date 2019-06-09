@@ -10,7 +10,8 @@
 #ifndef WEATHERSTATION_H
 #define WEATHERSTATION_H
 
-#include "Utils.h"
+#include "OSNet.h"
+#include "OSMisc.h"
 
 #define IP_ADDR_WEATHERSTATION "172.20.5.4"
 #define TCP_PORT_WEATHERSTATION "4001"
@@ -24,6 +25,76 @@ struct WEATHERSTATION
 	char port[MAX_BUF_LEN];
 };
 typedef struct WEATHERSTATION WEATHERSTATION;
+
+
+inline char* FindNMEASentence(char sentencebegin[7], char* str)
+{
+	char* ptr = 0;
+	char* foundstr = 0;
+
+	ptr = strstr(str, sentencebegin);
+	if (!ptr)
+	{
+		// Could not find the beginning of the sentence.
+		return 0;
+	}
+
+	// Save the position of the beginning of the sentence.
+	foundstr = ptr;
+
+	// Check if the sentence is complete.
+	ptr = strstr(foundstr+strlen(sentencebegin), "\r");
+	if (!ptr)
+	{
+		// The sentence is incomplete.
+		return 0;
+	}
+
+	return foundstr;
+}
+
+inline char* FindLatestNMEASentence(char sentencebegin[7], char* str)
+{
+	char* ptr = 0;
+	char* foundstr = 0;
+
+	ptr = FindNMEASentence(sentencebegin, str);
+	while (ptr) 
+	{
+		// Save the position of the beginning of the sentence.
+		foundstr = ptr;
+
+		// Search just after the beginning of the sentence.
+		ptr = FindNMEASentence(sentencebegin, foundstr+strlen(sentencebegin));
+	}
+
+	return foundstr;
+}
+
+inline void ComputeNMEAchecksum(char* sentence, char checksum[4])
+{
+	int i = 0;
+	char res = 0;
+
+	memset(checksum, 0, 4);
+	while (sentence[i])
+	{
+		if (sentence[i] == '$')
+		{
+			i++;
+			continue;
+		}
+		if (sentence[i] == '*')
+		{
+			break;
+		}
+		res ^= sentence[i];
+		i++;
+	}
+
+	sprintf(checksum, "*%02X", (int)res);
+}
+
 
 int InitWeatherStation(WEATHERSTATION* pWeatherStation);
 int GetDataWeatherStation(WEATHERSTATION* pWeatherStation, double* pLatitude, double* pLongitude, 

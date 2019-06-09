@@ -10,12 +10,8 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include "SimRudder.h"
-#include "SimSail.h"
-#include "SimCompass.h"
-#include "SimWeatherStation.h"
-#include "SimSerialIOInterface.h"
-#include "SimProbe.h"
+#include "OSNet.h"
+#include "OSMisc.h"
 
 // Other.
 extern int bEnableSimulator, bEmbeddedCom, bResetFiles, bRealTime;
