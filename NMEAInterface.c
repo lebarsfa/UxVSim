@@ -25,6 +25,8 @@ int handlenmeainterfacecli(SOCKET sockcli, void* pParam)
 	double heading = 0.0;
 	double winddir = 0.0;
 	double windspeed = 0.0;
+	double sog = 0.0;
+	double cog = 0.0;
 	int latdeg = 0;
 	double latdecmin = 0;
 	char NorthOrSouth = 0;
@@ -74,7 +76,7 @@ int handlenmeainterfacecli(SOCKET sockcli, void* pParam)
 				memset(buf, 0, sizeof(buf));
 				continue;
 			}
-			if (sscanf(buf, "%lf;%lf;%lf;%lf;%lf;%lf;\n", &tfile, &latitude, &longitude, &heading, &winddir, &windspeed) != 6)
+			if (sscanf(buf, "%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;\n", &tfile, &latitude, &longitude, &heading, &sog, &cog, &winddir, &windspeed) != 8)
 			{
 				memset(buf, 0, sizeof(buf));
 				continue;
@@ -131,8 +133,8 @@ int handlenmeainterfacecli(SOCKET sockcli, void* pParam)
 			}
 			memset(databuf, 0, sizeof(databuf));
 			memset(tmpbuf, 0, sizeof(tmpbuf));
-			sprintf(tmpbuf, "$GPRMC,000000,A,%02d%010.7f,%c,%03d%010.7f,%c,0.0,0.0,000000,,,A",
-				latdeg, latdecmin, NorthOrSouth, longdeg, longdecmin, EastOrWest);
+			sprintf(tmpbuf, "$GPRMC,000000,A,%02d%010.7f,%c,%03d%010.7f,%c,%06.2f,%06.2f,000000,,,A",
+				latdeg, latdecmin, NorthOrSouth, longdeg, longdecmin, EastOrWest, sog, cog);
 			ComputeNMEAchecksum(tmpbuf, checksum);
 			sprintf(databuf, "%s%s\r\n", tmpbuf, checksum);
 			if (sendall(sockcli, (char*)databuf, strlen(databuf)) != EXIT_SUCCESS)

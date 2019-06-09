@@ -20,7 +20,7 @@ deltag = 0, deltavmax = 0;
 
 // Parameters.
 int robid;
-double m = 0, Jx = 0, Jz = 0, rg = 0, rv = 0, l = 0, 
+double m = 0, Jx = 0, Jz = 0, rg = 0, rv = 0, l = 0,
 alphatheta = 0, alphaf = 0, alphag = 0, alphav = 0, alphaphi = 0, alphaw = 0, 
 hv = 0, leq = 0, deltavminreal = 0, deltavmaxreal = 0;
 

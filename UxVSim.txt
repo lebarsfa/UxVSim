@@ -1,5 +1,5 @@
 % robid (see Globals.h)
-0x00008000
+0x00000400
 % bEnableSimulator (0 : no, 1 : yes)
 1
 % bEmbeddedCom (0 : no, 1 : yes)
@@ -11,18 +11,16 @@
 % loop_sleep_time (time step in ms)
 20
 % lat0 (reference GPS position in decimal degrees)
-50.82061
 %48.3635
 %48.3654
 %48.3920
-%48.376687
+48.376687
 %48.3904
 % long0 (reference GPS position in decimal degrees)
--1.31395
 %-4.4875
 %-4.5000
 %-4.4280
-%-4.492376
+-4.492376
 %-4.4245
 % x (in m)
 0.0
@@ -87,8 +85,7 @@
 1.0
 %0
 % psi_med (wind direction in rad)
-%4.71
-0
+4.71
 % psi_var (wind direction max variation in rad)
 0.39
 %0
@@ -96,10 +93,10 @@
 0.01
 %0
 % Vc_med (current speed in m/s)
-0
+1
 %0
 % Vc_var (current speed max variation in m/s)
-0
+1
 %0
 % psic_med (current direction in rad)
 -1.5

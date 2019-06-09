@@ -291,8 +291,9 @@ int main()
 
 	// Intermediate variables.
 	double fg = 0, fv = 0, gamma = 0, deltav = 0, deltavmaxsimu = 0;
+	double xdot = 0, ydot = 0, thetadot = 0, vdot = 0, omegadot = 0, phiPointdot = 0, phidot = 0;
 
-	double latitude = 0, longitude = 0, heading = 0, winddir = 0, windspeed = 0;
+	double latitude = 0, longitude = 0, heading = 0, sog = 0, cog = 0, winddir = 0, windspeed = 0;
 	double roll = 0, pitch = 0, yaw = 0.0;
 
 	double t = 0, t0 = 0, dt = 0, dval = 0;
@@ -517,24 +518,36 @@ int main()
 
 			fg = alphag*v*sin(deltag-0.0);
 			fv = alphav*V;
-			x += (v*cos(theta)+Vc*cos(psic))*dt;
-			y += (v*sin(theta)+Vc*sin(psic))*dt;
-			theta += omega*dt;
-			omega += (1/Jz)*(rg*cos(deltag)*fg-alphatheta*omega)*dt;
-			v += (1/m)*(fv-sin(deltag)*fg-alphaf*v*v)*dt;
-			phiPoint += (-alphaphi*phiPoint/Jx+fv*hv*cos(deltav)*cos(phi)/Jx-m*9.81*leq*sin(phi)/Jx)*dt;
-			phi += phiPoint*dt;
+
+			xdot = (v*cos(theta)+Vc*cos(psic));
+			ydot = (v*sin(theta)+Vc*sin(psic));
+			thetadot = omega;
+			omegadot = (1/Jz)*(rg*cos(deltag)*fg-alphatheta*omega);
+			vdot = (1/m)*(fv-sin(deltag)*fg-alphaf*v*v);
+			phiPointdot = (-alphaphi*phiPoint/Jx+fv*hv*cos(deltav)*cos(phi)/Jx-m*9.81*leq*sin(phi)/Jx);
+			phidot = phiPoint;
+
+			x += xdot*dt;
+			y += ydot*dt;
+			theta += thetadot*dt;
+			omega += omegadot*dt;
+			v += vdot*dt;
+			phiPoint += phiPointdot*dt;
+			phi += phidot*dt;
 
 			// Outputs.
 			roll = fmod_2PI(phi+mt_error*(2.0*rand()/(double)RAND_MAX-1.0))*180.0/M_PI;
 			pitch = fmod_2PI(0.0+mt_error*(2.0*rand()/(double)RAND_MAX-1.0))*180.0/M_PI;
-			yaw = fmod_2PI(theta+M_PI/2.0+mt_error*(2.0*rand()/(double)RAND_MAX-1.0)-M_PI/2.0)*180.0/M_PI;
+			//yaw = fmod_2PI(theta+M_PI/2.0+mt_error*(2.0*rand()/(double)RAND_MAX-1.0)-M_PI/2.0)*180.0/M_PI; // For Razor...
+			yaw = fmod_2PI(theta+mt_error*(2.0*rand()/(double)RAND_MAX-1.0)-M_PI/2.0)*180.0/M_PI; // For SBG...
 			RefCoordSystem2GPS(lat0, long0, 0,
 				x+gps_error*(2.0*rand()/(double)RAND_MAX-1.0),
 				y+gps_error*(2.0*rand()/(double)RAND_MAX-1.0),
 				0,
 				&latitude, &longitude, &dval, EAST_NORTH_UP_COORDINATE_SYSTEM);
 			heading = (fmod_2PI(-((theta)-M_PI/2.0)+M_PI)+M_PI)*180.0/M_PI;
+			sog = sqrt(sqr(xdot)+sqr(ydot))*1.94;
+			cog = fmod_360_pos_rad2deg(-atan2(ydot,xdot)+M_PI/2.0);
 			winddir = (fmod_2PI(-(psi+M_PI-M_PI/2.0)+M_PI)+M_PI)*180.0/M_PI;
 			windspeed = V;
 			break;
@@ -572,10 +585,10 @@ int main()
 		}
 
 		if ((fprintf(frazorahrs, "%f;%f;%f;%f;\n", t, roll, -pitch, -yaw) <= 0)|
-			(fprintf(fsbg, "%f;%f;%f;%f;\n", t, roll, pitch, yaw) <= 0)|
+			(fprintf(fsbg, "%f;%f;%f;%f;\n", t, roll, -pitch, -yaw) <= 0)|
 			(fprintf(fmt, "%f;%f;%f;%f;\n", t, roll, pitch, yaw) <= 0)|
-			(fprintf(fnmea, "%f;%f;%f;%f;%f;%f;\n", 
-			t, latitude, longitude, heading, winddir, windspeed) <= 0))
+			(fprintf(fnmea, "%f;%f;%f;%f;%f;%f;%f;%f;\n", 
+			t, latitude, longitude, heading, sog, cog, winddir, windspeed) <= 0))
 		{
 			printf("fprintf() failed.\n");
 #ifdef _DEBUG
@@ -593,9 +606,6 @@ int main()
 #endif // _DEBUG
 			return EXIT_FAILURE;
 		}
-
-		//printf("%f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n", 
-		//	t, x, y, theta, v, phi, deltag, deltav, deltavmaxsimu, deltavmax);
 
 		fprintf(logsimfile, "%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;\n", 
 			t, x, y, theta, v, omega, phi, phiPoint, deltag, deltavmax, V, psi, Vc, psic, hw, 

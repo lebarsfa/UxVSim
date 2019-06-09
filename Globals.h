@@ -29,7 +29,7 @@ deltag, deltavmax;
 
 // Parameters.
 extern int robid;
-extern double m, Jx, Jz, rg, rv, l, 
+extern double m, Jx, Jz, rg, rv, l,
 alphatheta, alphaf, alphag, alphav, alphaphi, alphaw, 
 hv, leq, deltavminreal, deltavmaxreal;
 

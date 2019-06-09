@@ -1,3 +1,6 @@
+4
+Added SOG and COG for BOATBOT.
+
 3
 Added SBGInterface.
 
