@@ -1,4 +1,4 @@
-# Makefile for Linux, tested with Ubuntu 15.10. 
+# Makefile for Linux, tested with Ubuntu 16.04. 
 # You might need to install C/C++ development tools by typing :
 #    sudo apt-get install build-essential
 # in a terminal.

@@ -92,11 +92,11 @@ int handleim483icli(SOCKET sockcli, void* pParam)
 				{
 					if (val > 0)
 					{
-						angle = MIN_ANGLE_SAIL;
+						angle = MIN_ANGLE_IM483I;
 					}
 					if (val < 0)
 					{
-						angle = MAX_ANGLE_SAIL;
+						angle = MAX_ANGLE_IM483I;
 					}
 					GetTimeElapsedChrono(&chrono, &t);
 					if (fprintf(file, "%f;%f;\n", t, angle) <= 0)
@@ -115,7 +115,7 @@ int handleim483icli(SOCKET sockcli, void* pParam)
 				if (sscanf(databuf, "R%d\r", &val) == 1)
 				{
 					// Convert value for the motor into angle (in rad).
-					angle = (MAX_ANGLE_SAIL-MIN_ANGLE_SAIL)*(double)(-val)/(double)(MAX_SAIL-MIN_SAIL);
+					angle = (MAX_ANGLE_IM483I-MIN_ANGLE_IM483I)*(double)(-val)/(double)(MAX_IM483I-MIN_IM483I);
 					GetTimeElapsedChrono(&chrono, &t);
 					if (fprintf(file, "%f;%f;\n", t, angle) <= 0)
 					{

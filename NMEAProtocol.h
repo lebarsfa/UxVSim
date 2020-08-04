@@ -52,7 +52,8 @@
 #define MIN_NB_BYTES_END_NMEA 1
 
 // Maximum number of characters of a NMEA sentence (including the line terminators CR and LF).
-#define MAX_NB_BYTES_SENTENCE_NMEA 82
+// Should be increased to at least 92 and probably more
+//#define MAX_NB_BYTES_SENTENCE_NMEA 82
 #define MIN_NB_BYTES_SENTENCE_NMEA (1+MIN_NB_BYTES_ADDRESS_NMEA+MIN_NB_BYTES_END_NMEA)
 #pragma endregion
 
@@ -284,8 +285,13 @@ inline int AnalyzeSentenceNMEA(char* buf, int buflen, char* talkerid, char* mnem
 		ComputeChecksumNMEA(buf, *psentencelen, checksum);
 		if ((toupper(buf[*psentencelen-2-nb_bytes_end]) != checksum[1])||(toupper(buf[*psentencelen-1-nb_bytes_end]) != checksum[2]))
 		{ 
-			PRINT_DEBUG_WARNING(("Warning : NMEA checksum error (computed \"%.3s\", found \"*%c%c\"). \n", checksum, buf[*psentencelen-2-nb_bytes_end], buf[*psentencelen-1-nb_bytes_end]));
-			*pnbBytesToDiscard = *psentencelen;
+			PRINT_DEBUG_MESSAGE_OSUTILS(("Warning : NMEA checksum error (computed \"%.3s\", found \"*%c%c\"). \n", checksum, buf[*psentencelen-2-nb_bytes_end], buf[*psentencelen-1-nb_bytes_end]));
+			//for (i = 0; i < buflen; i++) printf("%c", buf[i]);
+			//printf("\n");
+			//for (i = 0; i < buflen; i++) printf("0x%02x ", (unsigned)buf[i]);			
+			//printf("\n");
+			//*pnbBytesToDiscard = *psentencelen;
+			*pnbBytesToDiscard = 1; // Not sure more than the start character can be discarded...
 			return EXIT_FAILURE;	
 		}
 	}
@@ -487,8 +493,13 @@ inline int AnalyzeSentenceWithAddressNMEA(char* buf, int buflen, char* talkerid,
 		ComputeChecksumNMEA(buf, *psentencelen, checksum);
 		if ((buf[*psentencelen-2-nb_bytes_end] != checksum[1])||(buf[*psentencelen-1-nb_bytes_end] != checksum[2]))
 		{ 
-			PRINT_DEBUG_WARNING(("Warning : NMEA checksum error (computed \"%.3s\", found \"*%c%c\"). \n", checksum, buf[*psentencelen-2-nb_bytes_end], buf[*psentencelen-1-nb_bytes_end]));
-			*pnbBytesToDiscard = *psentencelen;
+			PRINT_DEBUG_MESSAGE_OSUTILS(("Warning : NMEA checksum error (computed \"%.3s\", found \"*%c%c\"). \n", checksum, buf[*psentencelen-2-nb_bytes_end], buf[*psentencelen-1-nb_bytes_end]));
+			//for (i = 0; i < buflen; i++) printf("%c", buf[i]);
+			//printf("\n");
+			//for (i = 0; i < buflen; i++) printf("0x%02x ", (unsigned)buf[i]);			
+			//printf("\n");
+			//*pnbBytesToDiscard = *psentencelen;
+			*pnbBytesToDiscard = 1; // Not sure more than the start character can be discarded...
 			return EXIT_FAILURE;	
 		}
 	}
@@ -648,7 +659,7 @@ inline int ProcessSentenceNMEA(char* sentence, int sentencelen, char* talkerid, 
 		{
 			pNMEAData->hour = (int)pNMEAData->utc/10000;
 			pNMEAData->minute = (int)pNMEAData->utc/100-pNMEAData->hour*100;
-			pNMEAData->second = (pNMEAData->utc-pNMEAData->hour*10000)-pNMEAData->minute*100;
+			pNMEAData->second = (pNMEAData->utc-pNMEAData->hour*10000.0)-pNMEAData->minute*100.0;
 		}
 
 		if ((strlen(pNMEAData->szlatdeg) > 0)&&(strlen(pNMEAData->szlongdeg) > 0))
@@ -707,7 +718,7 @@ inline int ProcessSentenceNMEA(char* sentence, int sentencelen, char* talkerid, 
 		{
 			pNMEAData->hour = (int)pNMEAData->utc/10000;
 			pNMEAData->minute = (int)pNMEAData->utc/100-pNMEAData->hour*100;
-			pNMEAData->second = (pNMEAData->utc-pNMEAData->hour*10000)-pNMEAData->minute*100;
+			pNMEAData->second = (pNMEAData->utc-pNMEAData->hour*10000.0)-pNMEAData->minute*100.0;
 		}
 
 		if ((strlen(pNMEAData->szlatdeg) > 0)&&(strlen(pNMEAData->szlongdeg) > 0))
@@ -768,7 +779,7 @@ inline int ProcessSentenceNMEA(char* sentence, int sentencelen, char* talkerid, 
 		{
 			pNMEAData->hour = (int)pNMEAData->utc/10000;
 			pNMEAData->minute = (int)pNMEAData->utc/100-pNMEAData->hour*100;
-			pNMEAData->second = (pNMEAData->utc-pNMEAData->hour*10000)-pNMEAData->minute*100;
+			pNMEAData->second = (pNMEAData->utc-pNMEAData->hour*10000.0)-pNMEAData->minute*100.0;
 		}
 	}
 
@@ -808,18 +819,20 @@ inline int ProcessSentenceNMEA(char* sentence, int sentencelen, char* talkerid, 
 	if (strstr(mnemonic, "HDG"))
 	{
 		offset = 1+(int)strlen(talkerid);
-		if (sscanf(sentence+offset, "HDG,%lf,%lf,%c,%lf,%c", 
-			&pNMEAData->heading, &pNMEAData->deviation, &pNMEAData->dev_east, &pNMEAData->variation, &pNMEAData->var_east) != 5)
+		if ((sscanf(sentence+offset, "HDG,%lf,%lf,%c,%lf,%c",
+			&pNMEAData->heading, &pNMEAData->deviation, &pNMEAData->dev_east, &pNMEAData->variation, &pNMEAData->var_east) != 5)&&
+			(sscanf(sentence+offset, "HDG,%lf,%lf,%c",
+			&pNMEAData->heading, &pNMEAData->deviation, &pNMEAData->dev_east) != 3)&&
+			(sscanf(sentence+offset, "HDG,%lf", &pNMEAData->heading) != 1))
 		{
 			//printf("Error parsing NMEA sentence : Invalid data. \n");
 			//return EXIT_FAILURE;
 		}
-		// Do other else if (sscanf() != x) if more/less complete sentence...
 
 		// Convert heading to angle in rad.
-		pNMEAData->Heading = pNMEAData->heading*M_PI/180.0;
+		pNMEAData->Heading = (pNMEAData->heading-((pNMEAData->dev_east == 'W')? -fabs(pNMEAData->deviation): fabs(pNMEAData->deviation)))*M_PI/180.0;
 	}
-	
+
 	// Heading data.
 	if (strstr(mnemonic, "HDT"))
 	{

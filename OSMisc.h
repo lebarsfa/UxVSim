@@ -71,6 +71,13 @@ Debug macros specific to OSMisc.
 #ifndef DISABLE_USER_INPUT_FUNCTIONS
 #ifdef _WIN32
 #else 
+#ifndef DISABLE_CUSTOM_BAUDRATE
+#ifdef __linux__
+#define termios termbits_termios
+#include <asm/termbits.h> // Not compatible with termios.h, see https://stackoverflow.com/questions/37710525/including-termios-h-and-asm-termios-h-in-the-same-project...
+#undef termios
+#endif // __linux__
+#endif // !DISABLE_CUSTOM_BAUDRATE
 #include <termios.h>
 #endif // _WIN32
 #endif // !DISABLE_USER_INPUT_FUNCTIONS
@@ -980,6 +987,7 @@ inline char* stristr(char* String, char* Pattern)
 }
 #endif // !STRISTR_DEFINED
 
+// *pOut of length *pOutstrlen will not contain beginpattern nor endpattern...
 inline char* strstrbeginend(char* str, char* beginpattern, char* endpattern, char** pOut, int* pOutstrlen)
 {
 	char* ptr = NULL;
@@ -1011,6 +1019,7 @@ inline char* strstrbeginend(char* str, char* beginpattern, char* endpattern, cha
 	return *pOut;
 }
 
+// *pOut of length *pOutstrlen will not contain beginpattern nor endpattern...
 inline char* stristrbeginend(char* str, char* beginpattern, char* endpattern, char** pOut, int* pOutstrlen)
 {
 	char* ptr = NULL;
@@ -1040,6 +1049,46 @@ inline char* stristrbeginend(char* str, char* beginpattern, char* endpattern, ch
 	*pOut = ptr+strlen(beginpattern);
 
 	return *pOut;
+}
+
+// Reverse search : the last occurence will be returned.
+// *pOut of length *pOutstrlen will not contain beginpattern nor endpattern...
+inline char* rstrstrbeginend(char* str, char* beginpattern, char* endpattern, char** pOut, int* pOutstrlen)
+{
+    *pOut = NULL;
+	*pOutstrlen = 0;
+    for (;;) 
+	{
+		int plen = 0;
+        char* p = strstrbeginend(str, beginpattern, endpattern, &p, &plen);
+        if (p == NULL)
+            break;
+		*pOut = p;
+		*pOutstrlen = plen;
+        str = p-strlen(beginpattern)+1;
+    }
+
+    return *pOut;
+}
+
+// Reverse search : the last occurence will be returned.
+// *pOut of length *pOutstrlen will not contain beginpattern nor endpattern...
+inline char* rstristrbeginend(char* str, char* beginpattern, char* endpattern, char** pOut, int* pOutstrlen)
+{
+    *pOut = NULL;
+	*pOutstrlen = 0;
+    for (;;) 
+	{
+		int plen = 0;
+        char* p = stristrbeginend(str, beginpattern, endpattern, &p, &plen);
+        if (p == NULL)
+            break;
+		*pOut = p;
+		*pOutstrlen = plen;
+        str = p-strlen(beginpattern)+1;
+    }
+
+    return *pOut;
 }
 
 inline double sensor_err(double bias_err, double max_rand_err)

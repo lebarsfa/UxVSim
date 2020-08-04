@@ -17,8 +17,8 @@
 #endif // _MSC_VER
 int handlenmeainterfacecli(SOCKET sockcli, void* pParam)
 {
-	char databuf[MAX_BUF_LEN];
-	char tmpbuf[MAX_BUF_LEN];
+	char databuf[256];
+	char tmpbuf[192];
 	char checksum[4];
 	double latitude = 0.0;
 	double longitude = 0.0;
@@ -83,11 +83,12 @@ int handlenmeainterfacecli(SOCKET sockcli, void* pParam)
 			}
 			memset(buf, 0, sizeof(buf));
 		}
-		if (ferror(file) != EXIT_SUCCESS)
+		if (ferror(file))
 		{
 			printf("ferror() failed.\n");
 			return EXIT_FAILURE;
 		}
+		if (feof(file)) clearerr(file); // On Ubuntu 20.04, this seems necessary, see https://lists.gnu.org/archive/html/info-gnu/2018-08/msg00000.html...
 
 		//printf("%f\n", tfile);
 

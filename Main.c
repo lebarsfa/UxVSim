@@ -42,10 +42,11 @@ int GetLastNewLineFromFile(FILE* file, char* line, int nbbytes)
 		memcpy(line, buf, nbbytes);
 		memset(buf, 0, sizeof(buf));
 	}
-	if (ferror(file) != EXIT_SUCCESS)
+	if (ferror(file))
 	{
 		return EXIT_FAILURE;
 	}
+	if (feof(file)) clearerr(file); // On Ubuntu 20.04, this seems necessary, see https://lists.gnu.org/archive/html/info-gnu/2018-08/msg00000.html...
 	if (!bChanged)
 	{
 		return EXIT_NOT_CHANGED;
@@ -78,7 +79,7 @@ int GetLine_fwind(FILE* file, double* ptfile, double* pV, double* ppsi)
 		}
 		memset(buf, 0, sizeof(buf));
 	}
-	if (ferror(file) != EXIT_SUCCESS)
+	if (ferror(file))
 	{
 		printf("ferror() failed.\n");
 #ifdef _DEBUG
@@ -87,6 +88,7 @@ int GetLine_fwind(FILE* file, double* ptfile, double* pV, double* ppsi)
 #endif // _DEBUG
 		exit(EXIT_FAILURE);
 	}
+	if (feof(file)) clearerr(file); // On Ubuntu 20.04, this seems necessary, see https://lists.gnu.org/archive/html/info-gnu/2018-08/msg00000.html...
 
 	return EXIT_SUCCESS;
 }
@@ -115,7 +117,7 @@ int GetLine_fcurrent(FILE* file, double* ptfile, double* pVc, double* ppsic)
 		}
 		memset(buf, 0, sizeof(buf));
 	}
-	if (ferror(file) != EXIT_SUCCESS)
+	if (ferror(file))
 	{
 		printf("ferror() failed.\n");
 #ifdef _DEBUG
@@ -124,6 +126,7 @@ int GetLine_fcurrent(FILE* file, double* ptfile, double* pVc, double* ppsic)
 #endif // _DEBUG
 		exit(EXIT_FAILURE);
 	}
+	if (feof(file)) clearerr(file); // On Ubuntu 20.04, this seems necessary, see https://lists.gnu.org/archive/html/info-gnu/2018-08/msg00000.html...
 
 	return EXIT_SUCCESS;
 }
@@ -152,7 +155,7 @@ int GetLine_fwaves(FILE* file, double* ptfile, double* phw)
 		}
 		memset(buf, 0, sizeof(buf));
 	}
-	if (ferror(file) != EXIT_SUCCESS)
+	if (ferror(file))
 	{
 		printf("ferror() failed.\n");
 #ifdef _DEBUG
@@ -161,6 +164,7 @@ int GetLine_fwaves(FILE* file, double* ptfile, double* phw)
 #endif // _DEBUG
 		exit(EXIT_FAILURE);
 	}
+	if (feof(file)) clearerr(file); // On Ubuntu 20.04, this seems necessary, see https://lists.gnu.org/archive/html/info-gnu/2018-08/msg00000.html...
 
 	return EXIT_SUCCESS;
 }
@@ -189,7 +193,7 @@ int GetLine_fssc32(FILE* file, double* ptfile, double* pdeltag)
 		}
 		memset(buf, 0, sizeof(buf));
 	}
-	if (ferror(file) != EXIT_SUCCESS)
+	if (ferror(file))
 	{
 		printf("ferror() failed.\n");
 #ifdef _DEBUG
@@ -198,6 +202,7 @@ int GetLine_fssc32(FILE* file, double* ptfile, double* pdeltag)
 #endif // _DEBUG
 		exit(EXIT_FAILURE);
 	}
+	if (feof(file)) clearerr(file); // On Ubuntu 20.04, this seems necessary, see https://lists.gnu.org/archive/html/info-gnu/2018-08/msg00000.html...
 
 	return EXIT_SUCCESS;
 }
@@ -226,7 +231,7 @@ int GetLine_fpololu(FILE* file, double* ptfile, double* pdeltag)
 		}
 		memset(buf, 0, sizeof(buf));
 	}
-	if (ferror(file) != EXIT_SUCCESS)
+	if (ferror(file))
 	{
 		printf("ferror() failed.\n");
 #ifdef _DEBUG
@@ -235,6 +240,7 @@ int GetLine_fpololu(FILE* file, double* ptfile, double* pdeltag)
 #endif // _DEBUG
 		exit(EXIT_FAILURE);
 	}
+	if (feof(file)) clearerr(file); // On Ubuntu 20.04, this seems necessary, see https://lists.gnu.org/archive/html/info-gnu/2018-08/msg00000.html...
 
 	return EXIT_SUCCESS;
 }
@@ -263,7 +269,7 @@ int GetLine_fim483i(FILE* file, double* ptfile, double* pdeltavmax)
 		}
 		memset(buf, 0, sizeof(buf));
 	}
-	if (ferror(file) != EXIT_SUCCESS)
+	if (ferror(file))
 	{
 		printf("ferror() failed.\n");
 #ifdef _DEBUG
@@ -272,6 +278,7 @@ int GetLine_fim483i(FILE* file, double* ptfile, double* pdeltavmax)
 #endif // _DEBUG
 		exit(EXIT_FAILURE);
 	}
+	if (feof(file)) clearerr(file); // On Ubuntu 20.04, this seems necessary, see https://lists.gnu.org/archive/html/info-gnu/2018-08/msg00000.html...
 
 	return EXIT_SUCCESS;
 }

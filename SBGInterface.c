@@ -89,11 +89,12 @@ int handlesbginterfacecli(SOCKET sockcli, void* pParam)
 			}
 			memset(buf, 0, sizeof(buf));
 		}
-		if (ferror(file) != EXIT_SUCCESS)
+		if (ferror(file))
 		{
 			printf("ferror() failed.\n");
 			return EXIT_FAILURE;
 		}
+		if (feof(file)) clearerr(file); // On Ubuntu 20.04, this seems necessary, see https://lists.gnu.org/archive/html/info-gnu/2018-08/msg00000.html...
 
 		//printf("%f\n", tfile);
 

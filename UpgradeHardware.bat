@@ -5,5 +5,6 @@ set HARDWARE_PATH=%~d0\Personal data\Software\Other\Software development\C++\Rob
 copy /B /Y /Z "%HARDWARE_PATH%\NMEAProtocol.h" .\NMEAProtocol.h"
 copy /B /Y /Z "%HARDWARE_PATH%\RS232Port.h" .\RS232Port.h"
 copy /B /Y /Z "%HARDWARE_PATH%\SBG.h" .\SBG.h"
+copy /B /Y /Z "%HARDWARE_PATH%\IM483I.h" .\IM483I.h"
 
 pause
