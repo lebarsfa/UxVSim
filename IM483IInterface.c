@@ -80,12 +80,12 @@ int handleim483icli(SOCKET sockcli, void* pParam)
 			switch (databuf[0])
 			{
 			case ' ':
-				//memset(databuf, 0, sizeof(databuf));
-				//sprintf(databuf, "xxxx xxxx ADVANCED MICROSYSTEMS. INC MAX-2000 vX.XXi\r#");
-				//if (sendall(sockcli, (char*)databuf, strlen(databuf)) != EXIT_SUCCESS)
-				//{
-				//	return EXIT_FAILURE;
-				//}
+				memset(databuf, 0, sizeof(databuf));
+				sprintf(databuf, "xxxx xxxx ADVANCED MICROSYSTEMS. INC MAX-2000 vX.XXi\r#");
+				if (sendall(sockcli, (char*)databuf, strlen(databuf)) != EXIT_SUCCESS)
+				{
+					return EXIT_FAILURE;
+				}
 				break;
 			case 'M':
 				if (sscanf(databuf, "M%d\r", &val) == 1)
@@ -109,6 +109,11 @@ int handleim483icli(SOCKET sockcli, void* pParam)
 						printf("fflush() failed.\n");
 						return EXIT_FAILURE;
 					}
+					databuf[strlen(databuf)] = '\n'; // Not correct if there are multiple commands in databuf...
+					if (sendall(sockcli, (char*)databuf, strlen(databuf)) != EXIT_SUCCESS)
+					{
+						return EXIT_FAILURE;
+					}
 				}
 				break;
 			case 'R':
@@ -127,9 +132,19 @@ int handleim483icli(SOCKET sockcli, void* pParam)
 						printf("fflush() failed.\n");
 						return EXIT_FAILURE;
 					}
+					databuf[strlen(databuf)] = '\n'; // Not correct if there are multiple commands in databuf...
+					if (sendall(sockcli, (char*)databuf, strlen(databuf)) != EXIT_SUCCESS)
+					{
+						return EXIT_FAILURE;
+					}
 				}
 				break;
 			default:
+				databuf[strlen(databuf)] = '\n'; // Not correct if there are multiple commands in databuf...
+				if (sendall(sockcli, (char*)databuf, strlen(databuf)) != EXIT_SUCCESS)
+				{
+					return EXIT_FAILURE;
+				}
 				break;
 			}
 			break;

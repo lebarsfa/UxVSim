@@ -1,3 +1,8 @@
+6
+Updated IM483IInterface.c.
+Added SOG and COG for VAIMOS.
+Updates for VAIMOS.
+
 5
 Improved compatibility with Ubuntu 20.04. 
 

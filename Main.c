@@ -383,7 +383,8 @@ int main()
 		case VAIMOS_ROBID:
 			CreateDefaultThread(SSC32InterfaceThread, NULL, &SSC32InterfaceThreadId);
 			CreateDefaultThread(IM483IInterfaceThread, NULL, &IM483IInterfaceThreadId);
-			CreateDefaultThread(MTInterfaceThread, NULL, &MTInterfaceThreadId);
+			//CreateDefaultThread(MTInterfaceThread, NULL, &MTInterfaceThreadId);
+			CreateDefaultThread(SBGInterfaceThread, NULL, &SBGInterfaceThreadId);
 			CreateDefaultThread(NMEAInterfaceThread, NULL, &NMEAInterfaceThreadId);
 			CreateDefaultThread(OntrackInterfaceThread, NULL, &OntrackInterfaceThreadId);
 			CreateDefaultThread(ProbeInterfaceThread, NULL, &ProbeInterfaceThreadId);
@@ -408,6 +409,7 @@ int main()
 			CreateDefaultThread(IM483IInterfaceThread, NULL, &IM483IInterfaceThreadId);
 			CreateDefaultThread(RazorAHRSInterfaceThread, NULL, &RazorAHRSInterfaceThreadId);
 			CreateDefaultThread(MTInterfaceThread, NULL, &MTInterfaceThreadId);
+			CreateDefaultThread(SBGInterfaceThread, NULL, &SBGInterfaceThreadId);
 			CreateDefaultThread(NMEAInterfaceThread, NULL, &NMEAInterfaceThreadId);
 			CreateDefaultThread(OntrackInterfaceThread, NULL, &OntrackInterfaceThreadId);
 			CreateDefaultThread(MESInterfaceThread, NULL, &MESInterfaceThreadId);
@@ -545,7 +547,7 @@ int main()
 			// Outputs.
 			roll = fmod_2PI(phi+mt_error*(2.0*rand()/(double)RAND_MAX-1.0))*180.0/M_PI;
 			pitch = fmod_2PI(0.0+mt_error*(2.0*rand()/(double)RAND_MAX-1.0))*180.0/M_PI;
-			//yaw = fmod_2PI(theta+M_PI/2.0+mt_error*(2.0*rand()/(double)RAND_MAX-1.0)-M_PI/2.0)*180.0/M_PI; // For Razor...
+			//yaw = fmod_2PI(theta+M_PI/2.0+mt_error*(2.0*rand()/(double)RAND_MAX-1.0)-M_PI/2.0)*180.0/M_PI; // For Razor (rotated of 90 deg)...
 			yaw = fmod_2PI(theta+mt_error*(2.0*rand()/(double)RAND_MAX-1.0)-M_PI/2.0)*180.0/M_PI; // For SBG...
 			RefCoordSystem2GPS(lat0, long0, 0,
 				x+gps_error*(2.0*rand()/(double)RAND_MAX-1.0),
@@ -568,13 +570,22 @@ int main()
 			else if (sin(theta-psi)>0) deltav = deltavmaxsimu; else deltav = -deltavmaxsimu;
 			fg = alphag*v*sin(deltag);
 			fv = alphav*V*sin(theta+deltav-psi);
-			x += (v*cos(theta)+beta*V*cos(psi)+Vc*cos(psic))*dt;
-			y += (v*sin(theta)+beta*V*sin(psi)+Vc*sin(psic))*dt;
-			theta += omega*dt;
-			omega += (1/Jz)*((l-rv*cos(deltav))*fv-rg*cos(deltag)*fg-alphatheta*omega+alphaw*hw)*dt;
-			v += (1/m)*(sin(deltav)*fv-sin(deltag)*fg-alphaf*v*v)*dt;
-			phiPoint += (-alphaphi*phiPoint/Jx+fv*hv*cos(deltav)*cos(phi)/Jx-m*9.81*leq*sin(phi)/Jx)*dt;
-			phi += phiPoint*dt;
+
+			xdot = v*cos(theta)+beta*V*cos(psi)+Vc*cos(psic);
+			ydot = v*sin(theta)+beta*V*sin(psi)+Vc*sin(psic);
+			thetadot = omega;
+			omegadot = (1/Jz)*((l-rv*cos(deltav))*fv-rg*cos(deltag)*fg-alphatheta*omega+alphaw*hw);
+			vdot = (1/m)*(sin(deltav)*fv-sin(deltag)*fg-alphaf*v*v);
+			phiPointdot = -alphaphi*phiPoint/Jx+fv*hv*cos(deltav)*cos(phi)/Jx-m*9.81*leq*sin(phi)/Jx;
+			phidot = phiPoint;
+
+			x += xdot*dt;
+			y += ydot*dt;
+			theta += thetadot*dt;
+			omega += omegadot*dt;
+			v += vdot*dt;
+			phiPoint += phiPointdot*dt;
+			phi += phidot*dt;
 
 			// Outputs.
 			roll = fmod_2PI(phi+mt_error*(2.0*rand()/(double)RAND_MAX-1.0))*180.0/M_PI;
@@ -585,7 +596,10 @@ int main()
 				y+gps_error*(2.0*rand()/(double)RAND_MAX-1.0),
 				0,
 				&latitude, &longitude, &dval, EAST_NORTH_UP_COORDINATE_SYSTEM);
-			heading = (fmod_2PI(-((theta+deltav)-M_PI/2.0)+M_PI)+M_PI)*180.0/M_PI;
+			if (robid == VAIMOS_ROBID) heading = (fmod_2PI(-((theta+deltav)-M_PI/2.0)+M_PI)+M_PI)*180.0/M_PI; // Sail angle...
+			else heading = (fmod_2PI(-(theta-M_PI/2.0)+M_PI)+M_PI)*180.0/M_PI;
+			sog = sqrt(sqr(xdot)+sqr(ydot))*1.94;
+			cog = fmod_360_pos_rad2deg(-atan2(ydot,xdot)+M_PI/2.0);
 			winddir = (fmod_2PI(-(psi+M_PI-M_PI/2.0)+M_PI)+M_PI)*180.0/M_PI;
 			windspeed = V;
 			break;
