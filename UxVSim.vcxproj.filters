@@ -69,10 +69,10 @@
     <ClCompile Include="PololuInterface.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OntrackInterface.c">
+    <ClCompile Include="SBGInterface.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SBGInterface.c">
+    <ClCompile Include="OntrakInterface.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -81,9 +81,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Probe.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WeatherStation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OSCore.h">
@@ -140,12 +137,6 @@
     <ClInclude Include="IM483I.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ontrack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OntrackInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NMEAProtocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -156,6 +147,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RS232Port.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ontrak.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OntrakInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

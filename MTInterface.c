@@ -17,10 +17,10 @@
 #endif // _MSC_VER
 int handlemtinterfacecli(SOCKET sockcli, void* pParam)
 {
-	unsigned char gotoconfigackbuf[] = {PREAMBLE_COMPASS,ADDR_COMPASS,GO_TO_CONFIG_ACK_MID,0x00,0x00};
-	unsigned char configurationbuf[123] = {PREAMBLE_COMPASS,ADDR_COMPASS,CONFIGURATION_MID,118};
-	unsigned char gotomeasurementackbuf[] = {PREAMBLE_COMPASS,ADDR_COMPASS,GO_TO_MEASUREMENT_ACK_MID,0x00,0x00};
-	unsigned char mtdatabuf[17] = {PREAMBLE_COMPASS,ADDR_COMPASS,MTDATA_MID,12};
+	unsigned char gotoconfigackbuf[] = {PREAMBLE_MT,ADDR_MT,GO_TO_CONFIG_ACK_MID,0x00,0x00};
+	unsigned char configurationbuf[123] = {PREAMBLE_MT,ADDR_MT,CONFIGURATION_MID,118};
+	unsigned char gotomeasurementackbuf[] = {PREAMBLE_MT,ADDR_MT,GO_TO_MEASUREMENT_ACK_MID,0x00,0x00};
+	unsigned char mtdatabuf[17] = {PREAMBLE_MT,ADDR_MT,MTDATA_MID,12};
 	unsigned char databuf[MAX_BUF_LEN];
 	uFloat_MT uf;
 	int offset = 0;

@@ -10,6 +10,9 @@
 #include "Config.h"
 #include "SSC32Interface.h"
 
+#define MIN_ANGLE_RUDDER (-M_PI/4.0)
+#define MAX_ANGLE_RUDDER (M_PI/4.0)
+
 #ifdef _MSC_VER
 // Disable some Visual Studio warnings.
 #pragma warning(disable : 4127) 
@@ -79,7 +82,7 @@ int handlessc32interfacecli(SOCKET sockcli, void* pParam)
 			if (sscanf(databuf, "#0P%d\r", &pw) == 1)
 			{
 				// Convert ssc32 pulse width (in us) into angle (in rad).
-				angle = (pw-MID_PW_RUDDER)*(MAX_ANGLE_RUDDER-MIN_ANGLE_RUDDER)/(MAX_PW_RUDDER-MIN_PW_RUDDER);
+				angle = (pw-DEFAULT_MID_PW_SSC32)*(MAX_ANGLE_RUDDER-MIN_ANGLE_RUDDER)/(DEFAULT_MAX_PW_SSC32-DEFAULT_MIN_PW_SSC32);
 				GetTimeElapsedChrono(&chrono, &t);
 				if (fprintf(file, "%f;%f;\n", t, angle) <= 0)
 				{

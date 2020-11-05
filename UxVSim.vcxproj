@@ -116,7 +116,7 @@
     <ClCompile Include="SBGInterface.c" />
     <ClCompile Include="SSC32Interface.c" />
     <ClCompile Include="IM483IInterface.c" />
-    <ClCompile Include="OntrackInterface.c" />
+    <ClCompile Include="OntrakInterface.c" />
     <ClCompile Include="NMEAInterface.c" />
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +124,7 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="NMEAProtocol.h" />
+    <ClInclude Include="Ontrak.h" />
     <ClInclude Include="OSCore.h" />
     <ClInclude Include="OSCriticalSection.h" />
     <ClInclude Include="OSMisc.h" />
@@ -136,7 +137,6 @@
     <ClInclude Include="SBGInterface.h" />
     <ClInclude Include="SSC32.h" />
     <ClInclude Include="IM483I.h" />
-    <ClInclude Include="Ontrack.h" />
     <ClInclude Include="MTInterface.h" />
     <ClInclude Include="PololuInterface.h" />
     <ClInclude Include="MESInterface.h" />
@@ -144,9 +144,8 @@
     <ClInclude Include="RazorAHRSInterface.h" />
     <ClInclude Include="SSC32Interface.h" />
     <ClInclude Include="IM483IInterface.h" />
-    <ClInclude Include="OntrackInterface.h" />
+    <ClInclude Include="OntrakInterface.h" />
     <ClInclude Include="NMEAInterface.h" />
-    <ClInclude Include="WeatherStation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CHANGELOG.TXT" />

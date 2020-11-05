@@ -14,7 +14,7 @@
 #include "SBGInterface.h"
 #include "MTInterface.h"
 #include "NMEAInterface.h"
-#include "OntrackInterface.h"
+#include "OntrakInterface.h"
 #include "MESInterface.h"
 #include "ProbeInterface.h"
 #include "Config.h"
@@ -292,7 +292,7 @@ int main()
 	THREAD_IDENTIFIER SBGInterfaceThreadId;
 	THREAD_IDENTIFIER MTInterfaceThreadId;
 	THREAD_IDENTIFIER NMEAInterfaceThreadId;
-	THREAD_IDENTIFIER OntrackInterfaceThreadId;
+	THREAD_IDENTIFIER OntrakInterfaceThreadId;
 	THREAD_IDENTIFIER MESInterfaceThreadId;
 	THREAD_IDENTIFIER ProbeInterfaceThreadId;
 
@@ -316,7 +316,7 @@ int main()
 	FILE* fsbg = NULL;
 	FILE* fmt = NULL;
 	FILE* fnmea = NULL;
-	FILE* fserialiointerface = NULL;
+	FILE* fontrak = NULL;
 	FILE* fmes = NULL;
 	FILE* fprobe = NULL;
 	double tfile1 = 0, tfile2 = 0, tfile3 = 0, tfile4 = 0, tfile5 = 0;
@@ -331,6 +331,9 @@ int main()
 	setbuf(stdout, NULL);
 
 	srand(GetTickCount());
+
+	printf("\nUxVSim V7\n");
+	fflush(stdout);
 
 	InitNet();
 
@@ -362,7 +365,7 @@ int main()
 		fsbg = fopen("SBGInterface.csv", "w");fclose(fsbg);
 		fmt = fopen("MTInterface.csv", "w");fclose(fmt);
 		fnmea = fopen("NMEAInterface.csv", "w");fclose(fnmea);
-		fserialiointerface = fopen("OntrackInterface.csv", "w");fclose(fserialiointerface);
+		fontrak = fopen("OntrakInterface.csv", "w");fclose(fontrak);
 		fmes = fopen("MESInterface.csv", "w");fclose(fmes);
 		fprobe = fopen("ProbeInterface.csv", "w");fclose(fprobe);
 		printf("Simulated data files reset.\n");
@@ -386,7 +389,7 @@ int main()
 			//CreateDefaultThread(MTInterfaceThread, NULL, &MTInterfaceThreadId);
 			CreateDefaultThread(SBGInterfaceThread, NULL, &SBGInterfaceThreadId);
 			CreateDefaultThread(NMEAInterfaceThread, NULL, &NMEAInterfaceThreadId);
-			CreateDefaultThread(OntrackInterfaceThread, NULL, &OntrackInterfaceThreadId);
+			CreateDefaultThread(OntrakInterfaceThread, NULL, &OntrakInterfaceThreadId);
 			CreateDefaultThread(ProbeInterfaceThread, NULL, &ProbeInterfaceThreadId);
 			break;
 		case SAILBOAT_ROBID:
@@ -411,7 +414,7 @@ int main()
 			CreateDefaultThread(MTInterfaceThread, NULL, &MTInterfaceThreadId);
 			CreateDefaultThread(SBGInterfaceThread, NULL, &SBGInterfaceThreadId);
 			CreateDefaultThread(NMEAInterfaceThread, NULL, &NMEAInterfaceThreadId);
-			CreateDefaultThread(OntrackInterfaceThread, NULL, &OntrackInterfaceThreadId);
+			CreateDefaultThread(OntrakInterfaceThread, NULL, &OntrakInterfaceThreadId);
 			CreateDefaultThread(MESInterfaceThread, NULL, &MESInterfaceThreadId);
 			CreateDefaultThread(ProbeInterfaceThread, NULL, &ProbeInterfaceThreadId);
 			break;
@@ -444,8 +447,9 @@ int main()
 	fsbg = fopen("SBGInterface.csv", "a");
 	fmt = fopen("MTInterface.csv", "a");
 	fnmea = fopen("NMEAInterface.csv", "a");
+	fontrak = fopen("OntrakInterface.csv", "a");
 	if ((fwind == NULL)||(fcurrent == NULL)||(fwaves == NULL)||
-		(fssc32 == NULL)||(fpololu == NULL)||(fim483i == NULL)||(frazorahrs == NULL)||(fsbg == NULL)||(fmt == NULL)||(fnmea == NULL))
+		(fssc32 == NULL)||(fpololu == NULL)||(fim483i == NULL)||(frazorahrs == NULL)||(fsbg == NULL)||(fmt == NULL)||(fnmea == NULL)||(fontrak == NULL))
 	{
 		printf("fopen() failed.\n");
 #ifdef _DEBUG
@@ -639,7 +643,7 @@ int main()
 
 	fclose(logsimfile);
 
-	if ((fclose(fnmea) != EXIT_SUCCESS)|(fclose(fmt) != EXIT_SUCCESS)|(fclose(fsbg) != EXIT_SUCCESS)|(fclose(frazorahrs) != EXIT_SUCCESS)|
+	if ((fclose(fontrak) != EXIT_SUCCESS)|(fclose(fnmea) != EXIT_SUCCESS)|(fclose(fmt) != EXIT_SUCCESS)|(fclose(fsbg) != EXIT_SUCCESS)|(fclose(frazorahrs) != EXIT_SUCCESS)|
 		(fclose(fim483i) != EXIT_SUCCESS)|(fclose(fpololu) != EXIT_SUCCESS)|(fclose(fssc32) != EXIT_SUCCESS)|
 		(fclose(fwaves) != EXIT_SUCCESS)|(fclose(fcurrent) != EXIT_SUCCESS)|(fclose(fwind) != EXIT_SUCCESS))
 	{

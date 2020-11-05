@@ -10,7 +10,7 @@
 #ifndef NMEAINTERFACE_H
 #define NMEAINTERFACE_H
 
-#include "WeatherStation.h"
+#include "NMEAProtocol.h"
 
 THREAD_PROC_RETURN_VALUE NMEAInterfaceThread(void* pParam);
 

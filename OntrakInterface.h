@@ -7,11 +7,11 @@
 #	undef _MSC_VER
 #endif // defined(__GNUC__) || defined(__BORLANDC__)
 
-#ifndef ONTRACKINTERFACE_H
-#define ONTRACKINTERFACE_H
+#ifndef ONTRAKINTERFACE_H
+#define ONTRAKINTERFACE_H
 
-#include "Ontrack.h"
+#include "Ontrak.h"
 
-THREAD_PROC_RETURN_VALUE OntrackInterfaceThread(void* pParam);
+THREAD_PROC_RETURN_VALUE OntrakInterfaceThread(void* pParam);
 
-#endif // ONTRACKINTERFACE_H
+#endif // ONTRAKINTERFACE_H

@@ -87,7 +87,7 @@ SSC32Interface.o: SSC32Interface.c
 IM483IInterface.o: IM483IInterface.c
 	$(CC) $(CFLAGS) -c $<
 
-OntrackInterface.o: OntrackInterface.c
+OntrakInterface.o: OntrakInterface.c
 	$(CC) $(CFLAGS) -c $<
 
 NMEAInterface.o: NMEAInterface.c
@@ -99,10 +99,10 @@ Globals.o: Globals.c
 Config.o: Config.c
 	$(CC) $(CFLAGS) -c $<
 
-Main.o: Main.c MTInterface.h PololuInterface.h MESInterface.h ProbeInterface.h RazorAHRSInterface.h SBGInterface.h SSC32Interface.h IM483IInterface.h OntrackInterface.h NMEAInterface.h NMEAProtocol.h Config.o Globals.h OSThread.h OSNet.h OSComputerRS232Port.h OSMisc.h OSCriticalSection.h OSTime.h OSCore.h
+Main.o: Main.c MTInterface.h PololuInterface.h MESInterface.h ProbeInterface.h RazorAHRSInterface.h SBGInterface.h SSC32Interface.h IM483IInterface.h OntrakInterface.h NMEAInterface.h NMEAProtocol.h Config.o Globals.h OSThread.h OSNet.h OSComputerRS232Port.h OSMisc.h OSCriticalSection.h OSTime.h OSCore.h
 	$(CC) $(CFLAGS) -c $<
 
-UxVSim: Main.o MTInterface.o PololuInterface.o MESInterface.o ProbeInterface.o RazorAHRSInterface.o SBGInterface.o SSC32Interface.o IM483IInterface.o OntrackInterface.o NMEAInterface.o Globals.o OSThread.o OSNet.o OSComputerRS232Port.o OSMisc.o OSCriticalSection.o OSTime.o OSCore.o
+UxVSim: Main.o MTInterface.o PololuInterface.o MESInterface.o ProbeInterface.o RazorAHRSInterface.o SBGInterface.o SSC32Interface.o IM483IInterface.o OntrakInterface.o NMEAInterface.o Globals.o OSThread.o OSNet.o OSComputerRS232Port.o OSMisc.o OSCriticalSection.o OSTime.o OSCore.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 clean:

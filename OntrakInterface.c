@@ -8,14 +8,14 @@
 #endif // defined(__GNUC__) || defined(__BORLANDC__)
 
 #include "Config.h"
-#include "OntrackInterface.h"
+#include "OntrakInterface.h"
 
 #ifdef _MSC_VER
 // Disable some Visual Studio warnings.
 #pragma warning(disable : 4127) 
 #pragma warning(disable : 4702) 
 #endif // _MSC_VER
-int handleserialiointerfacecli(SOCKET sockcli, void* pParam)
+int handleontrakcli(SOCKET sockcli, void* pParam)
 {
 	char sidatabuf[MAX_BUF_LEN];
 	char databuf[MAX_BUF_LEN];
@@ -32,11 +32,11 @@ int handleserialiointerfacecli(SOCKET sockcli, void* pParam)
 
 	StartChrono(&chrono);
 
-	file = fopen("OntrackInterface.csv", "a");
+	file = fopen("OntrakInterface.csv", "a");
 
 	if (!file)
 	{
-		printf("OntrackInterface.csv not found.\n");
+		printf("OntrakInterface.csv not found.\n");
 		return EXIT_FAILURE;
 	}
 
@@ -92,7 +92,7 @@ int handleserialiointerfacecli(SOCKET sockcli, void* pParam)
 			case 0:
 				if (sscanf(databuf+1, "RD%d\r", &channel) == 1)
 				{
-					sprintf(sidatabuf, "%04d ", 0);
+					sprintf(sidatabuf, "%04d ", 4095);
 					if (sendall(sockcli, sidatabuf, strlen(sidatabuf)) != EXIT_SUCCESS)
 					{
 						return EXIT_FAILURE;
@@ -164,13 +164,13 @@ int handleserialiointerfacecli(SOCKET sockcli, void* pParam)
 #pragma warning(default : 4702) 
 #endif // _MSC_VER
 
-THREAD_PROC_RETURN_VALUE OntrackInterfaceThread(void* pParam)
+THREAD_PROC_RETURN_VALUE OntrakInterfaceThread(void* pParam)
 {
 	UNREFERENCED_PARAMETER(pParam);
 
-	if (LaunchSingleCliTCPSrv("4002", handleserialiointerfacecli, NULL) != EXIT_SUCCESS)
+	if (LaunchSingleCliTCPSrv("4002", handleontrakcli, NULL) != EXIT_SUCCESS)
 	{
-		printf("Error launching the OntrackInterface server.\n");
+		printf("Error launching the OntrakInterface server.\n");
 		exit(EXIT_FAILURE);
 	}
 
