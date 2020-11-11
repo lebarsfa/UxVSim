@@ -92,7 +92,7 @@ int handleontrakcli(SOCKET sockcli, void* pParam)
 			case 0:
 				if (sscanf(databuf+1, "RD%d\r", &channel) == 1)
 				{
-					sprintf(sidatabuf, "%04d ", 4095);
+					sprintf(sidatabuf, "%04d ", (int)(1024+128*rand()/(double)RAND_MAX));
 					if (sendall(sockcli, sidatabuf, strlen(sidatabuf)) != EXIT_SUCCESS)
 					{
 						return EXIT_FAILURE;

@@ -19,7 +19,7 @@ int handleim483icli(SOCKET sockcli, void* pParam)
 {
 	char databuf[MAX_BUF_LEN];
 	int val = 0;
-	double angle = 0.0;
+	double fval = 0, angle = 0.0;
 	FILE* file = NULL;
 	double t = 0.0;
 	CHRONO chrono;
@@ -81,10 +81,34 @@ int handleim483icli(SOCKET sockcli, void* pParam)
 			{
 			case ' ':
 				memset(databuf, 0, sizeof(databuf));
-				sprintf(databuf, "xxxx xxxx ADVANCED MICROSYSTEMS. INC MAX-2000 vX.XXi\r#");
+				sprintf(databuf, "xxxx xxxx ADVANCED MICRO SYSTEMS, INC\r\nMAX-2000 vX.XXi\r\n#");
 				if (sendall(sockcli, (char*)databuf, strlen(databuf)) != EXIT_SUCCESS)
 				{
 					return EXIT_FAILURE;
+				}
+				break;
+			case '+':
+			case '-':
+				if (sscanf(databuf, "%lf\r", &fval) == 1)
+				{
+					// Convert value for the motor into angle (in rad).
+					angle += (MAX_ANGLE_IM483I-MIN_ANGLE_IM483I)*(double)(-fval)/(double)(MAX_IM483I-MIN_IM483I);
+					GetTimeElapsedChrono(&chrono, &t);
+					if (fprintf(file, "%f;%f;\n", t, angle) <= 0)
+					{
+						printf("fprintf() failed.\n");
+						return EXIT_FAILURE;
+					}
+					if (fflush(file) != EXIT_SUCCESS)
+					{
+						printf("fflush() failed.\n");
+						return EXIT_FAILURE;
+					}
+					databuf[strlen(databuf)] = '\n'; // Not correct if there are multiple commands in databuf...
+					if (sendall(sockcli, (char*)databuf, strlen(databuf)) != EXIT_SUCCESS)
+					{
+						return EXIT_FAILURE;
+					}
 				}
 				break;
 			case 'M':
@@ -117,10 +141,10 @@ int handleim483icli(SOCKET sockcli, void* pParam)
 				}
 				break;
 			case 'R':
-				if (sscanf(databuf, "R%d\r", &val) == 1)
+				if (sscanf(databuf, "R%lf\r", &fval) == 1)
 				{
 					// Convert value for the motor into angle (in rad).
-					angle = (MAX_ANGLE_IM483I-MIN_ANGLE_IM483I)*(double)(-val)/(double)(MAX_IM483I-MIN_IM483I);
+					angle = (MAX_ANGLE_IM483I-MIN_ANGLE_IM483I)*(double)(-fval)/(double)(MAX_IM483I-MIN_IM483I);
 					GetTimeElapsedChrono(&chrono, &t);
 					if (fprintf(file, "%f;%f;\n", t, angle) <= 0)
 					{
