@@ -125,6 +125,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="NMEAProtocol.h" />
     <ClInclude Include="Ontrak.h" />
+    <ClInclude Include="OSComputerRS232Port.h" />
     <ClInclude Include="OSCore.h" />
     <ClInclude Include="OSCriticalSection.h" />
     <ClInclude Include="OSMisc.h" />

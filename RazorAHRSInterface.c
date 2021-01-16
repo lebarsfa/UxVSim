@@ -170,7 +170,7 @@ int handleclirazorahrs(SOCKET sockcli, void* pParam)
 			{
 				sprintf(sendbuf, "#YPR=%.2f,%.2f,%.2f\r\n", yaw, pitch, roll);
 			}
-			sendbuflen = strlen(sendbuf);
+			sendbuflen = (int)strlen(sendbuf);
 			if (bOutputStream)
 			{
 				if (sendall(sockcli, (char*)sendbuf, sendbuflen) != EXIT_SUCCESS)

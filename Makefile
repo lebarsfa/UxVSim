@@ -1,8 +1,8 @@
-# Makefile for Linux, tested with Ubuntu 16.04. 
+# Designed for Ubuntu 18.04. 
 # You might need to install C/C++ development tools by typing :
 #    sudo apt-get install build-essential
 # in a terminal.
-# For more information on the configuration used, see www.ensta-bretagne.fr/lebars/Share/Ubuntu.txt .
+# For more information on the configuration used, see http://www.ensta-bretagne.fr/lebars/Share/Ubuntu.txt .
 # Use dos2unix *.txt to ensure line endings are correct for Linux in the configuration files.
 
 PROGS = UxVSim
@@ -18,12 +18,20 @@ CFLAGS += -Wall -Wno-unknown-pragmas -Wextra
 #CFLAGS += -D _DEBUG -D _DEBUG_DISPLAY 
 #CFLAGS += -D _DEBUG_MESSAGES 
 
+# Depending on your OS (old Linux or macOS)...
+#CFLAGS += -D USE_OLD_CHRONO
+
 CXXFLAGS += $(CFLAGS) -fpermissive
 
+# For Linux, if static needed...
 #LDFLAGS += -static-libgcc -static-libstdc++ -static
 
-# For Windows/MinGW
-#LDFLAGS += -lpthread -lws2_32
+# For MinGW
+#LDFLAGS += -lpthread -lws2_32 -lm
+
+# For macOS
+#LDFLAGS += -lpthread -lm
+
 # For Linux
 LDFLAGS += -lpthread -lrt -lm
 
@@ -31,16 +39,10 @@ default: $(PROGS)
 
 ############################# OSUtils #############################
 
-OSComputerRS232Port.o: OSComputerRS232Port.c OSComputerRS232Port.h OSTime.o
-	$(CC) $(CFLAGS) -c $<
-
 OSCore.o: OSCore.c OSCore.h
 	$(CC) $(CFLAGS) -c $<
 
 OSCriticalSection.o: OSCriticalSection.c OSCriticalSection.h OSThread.o
-	$(CC) $(CFLAGS) -c $<
-
-OSEv.o: OSEv.c OSEv.h OSThread.o
 	$(CC) $(CFLAGS) -c $<
 
 OSMisc.o: OSMisc.c OSMisc.h OSTime.o
@@ -49,16 +51,10 @@ OSMisc.o: OSMisc.c OSMisc.h OSTime.o
 OSNet.o: OSNet.c OSNet.h OSThread.o
 	$(CC) $(CFLAGS) -c $<
 
-OSSem.o: OSSem.c OSSem.h OSTime.o
-	$(CC) $(CFLAGS) -c $<
-
 OSThread.o: OSThread.c OSThread.h OSTime.o
 	$(CC) $(CFLAGS) -c $<
 
 OSTime.o: OSTime.c OSTime.h OSCore.o
-	$(CC) $(CFLAGS) -c $<
-
-OSTimer.o: OSTimer.c OSTimer.h OSEv.o
 	$(CC) $(CFLAGS) -c $<
 
 ############################# PROGS #############################
@@ -102,7 +98,7 @@ Config.o: Config.c
 Main.o: Main.c MTInterface.h PololuInterface.h MESInterface.h ProbeInterface.h RazorAHRSInterface.h SBGInterface.h SSC32Interface.h IM483IInterface.h OntrakInterface.h NMEAInterface.h NMEAProtocol.h Config.o Globals.h OSThread.h OSNet.h OSComputerRS232Port.h OSMisc.h OSCriticalSection.h OSTime.h OSCore.h
 	$(CC) $(CFLAGS) -c $<
 
-UxVSim: Main.o MTInterface.o PololuInterface.o MESInterface.o ProbeInterface.o RazorAHRSInterface.o SBGInterface.o SSC32Interface.o IM483IInterface.o OntrakInterface.o NMEAInterface.o Globals.o OSThread.o OSNet.o OSComputerRS232Port.o OSMisc.o OSCriticalSection.o OSTime.o OSCore.o
+UxVSim: Main.o MTInterface.o PololuInterface.o MESInterface.o ProbeInterface.o RazorAHRSInterface.o SBGInterface.o SSC32Interface.o IM483IInterface.o OntrakInterface.o NMEAInterface.o Globals.o OSThread.o OSNet.o OSMisc.o OSCriticalSection.o OSTime.o OSCore.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 clean:

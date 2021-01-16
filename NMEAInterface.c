@@ -126,9 +126,9 @@ int handlenmeainterfacecli(SOCKET sockcli, void* pParam)
 			GPSLongitudeDecDeg2DegDecMin(longitude, &longdeg, &longdecmin, &EastOrWest);
 			sprintf(tmpbuf, "$GPGGA,000000,%02d%010.7f,%c,%03d%010.7f,%c,1,7,1.3,0.0,M,,,,", 
 				latdeg, latdecmin, NorthOrSouth, longdeg, longdecmin, EastOrWest);
-			ComputeChecksumNMEA(tmpbuf, strlen(tmpbuf), checksum);
+			ComputeChecksumNMEA(tmpbuf, (int)strlen(tmpbuf), checksum);
 			sprintf(databuf, "%s%s\r\n", tmpbuf, checksum);
-			if (sendall(sockcli, (char*)databuf, strlen(databuf)) != EXIT_SUCCESS)
+			if (sendall(sockcli, (char*)databuf, (int)strlen(databuf)) != EXIT_SUCCESS)
 			{
 				return EXIT_FAILURE;
 			}
@@ -136,17 +136,17 @@ int handlenmeainterfacecli(SOCKET sockcli, void* pParam)
 			memset(tmpbuf, 0, sizeof(tmpbuf));
 			sprintf(tmpbuf, "$GPRMC,000000,A,%02d%010.7f,%c,%03d%010.7f,%c,%06.2f,%06.2f,000000,,,A",
 				latdeg, latdecmin, NorthOrSouth, longdeg, longdecmin, EastOrWest, sog, cog);
-			ComputeChecksumNMEA(tmpbuf, strlen(tmpbuf), checksum);
+			ComputeChecksumNMEA(tmpbuf, (int)strlen(tmpbuf), checksum);
 			sprintf(databuf, "%s%s\r\n", tmpbuf, checksum);
-			if (sendall(sockcli, (char*)databuf, strlen(databuf)) != EXIT_SUCCESS)
+			if (sendall(sockcli, (char*)databuf, (int)strlen(databuf)) != EXIT_SUCCESS)
 			{
 				return EXIT_FAILURE;
 			}
 			//heading = 355;
 			sprintf(tmpbuf, "$HCHDG,%.1f,0.0,E,0.0,W", heading);
-			ComputeChecksumNMEA(tmpbuf, strlen(tmpbuf), checksum);
+			ComputeChecksumNMEA(tmpbuf, (int)strlen(tmpbuf), checksum);
 			sprintf(databuf, "%s%s\r\n", tmpbuf, checksum);
-			if (sendall(sockcli, (char*)databuf, strlen(databuf)) != EXIT_SUCCESS)
+			if (sendall(sockcli, (char*)databuf, (int)strlen(databuf)) != EXIT_SUCCESS)
 			{
 				return EXIT_FAILURE;
 			}
@@ -154,9 +154,9 @@ int handlenmeainterfacecli(SOCKET sockcli, void* pParam)
 			//windspeed = 10;
 			sprintf(tmpbuf, "$WIMDA,30.0000,I,1.0000,B,15.5,C,,,,,,,%.1f,T,%.1f,M,%.1f,N,%.1f,M", 
 				winddir, winddir, windspeed*1.94, windspeed);
-			ComputeChecksumNMEA(tmpbuf, strlen(tmpbuf), checksum);
+			ComputeChecksumNMEA(tmpbuf, (int)strlen(tmpbuf), checksum);
 			sprintf(databuf, "%s%s\r\n", tmpbuf, checksum);
-			if (sendall(sockcli, (char*)databuf, strlen(databuf)) != EXIT_SUCCESS)
+			if (sendall(sockcli, (char*)databuf, (int)strlen(databuf)) != EXIT_SUCCESS)
 			{
 				return EXIT_FAILURE;
 			}

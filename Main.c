@@ -332,7 +332,7 @@ int main()
 
 	srand(GetTickCount());
 
-	printf("\nUxVSim V8\n");
+	printf("\nUxVSim V9\n");
 	fflush(stdout);
 
 	InitNet();
