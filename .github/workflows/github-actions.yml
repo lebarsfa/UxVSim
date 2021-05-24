@@ -8,7 +8,7 @@ jobs:
     - run: make
 
  j2:
-    name: Windows Visual Studio 2019
+    name: Windows Visual Studio 2019 x64
     runs-on: windows-2019
     steps: 
     - uses: actions/checkout@v2
