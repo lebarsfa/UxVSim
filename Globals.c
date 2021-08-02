@@ -15,7 +15,7 @@ int loop_sleep_time = 0;
 double lat0 = 0, long0 = 0;	
 
 // State variables.
-double x = 0, y = 0, theta = 0, v = 0, omega = 0, phi = 0, phiPoint = 0, 
+double x = 0, y = 0, theta = 0, v = 0, vx = 0, vy = 0, omega = 0, phi = 0, phiPoint = 0, 
 deltag = 0, deltavmax = 0;
 
 // Parameters.

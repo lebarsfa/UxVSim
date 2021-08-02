@@ -14,6 +14,7 @@
 #include "OSMisc.h"
 
 #define MOTORBOAT_ROBID               0x00000400
+#define SPEBOT_ROBID                  0x00000800
 #define VAIMOS_ROBID                  0x00002000
 #define SAILBOAT_ROBID                0x00004000
 #define SAILBOAT2_ROBID               0x00008000
@@ -24,7 +25,7 @@ extern int loop_sleep_time;
 extern double lat0, long0;	
 
 // State variables.
-extern double x, y, theta, v, omega, phi, phiPoint, 
+extern double x, y, theta, v, vx, vy, omega, phi, phiPoint, 
 deltag, deltavmax;
 
 // Parameters.

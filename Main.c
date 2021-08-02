@@ -298,7 +298,7 @@ int main()
 
 	// Intermediate variables.
 	double fg = 0, fv = 0, gamma = 0, deltav = 0, deltavmaxsimu = 0;
-	double xdot = 0, ydot = 0, thetadot = 0, vdot = 0, omegadot = 0, phiPointdot = 0, phidot = 0;
+	double xdot = 0, ydot = 0, thetadot = 0, vdot = 0, vxdot = 0, vydot = 0, omegadot = 0, phiPointdot = 0, phidot = 0;
 
 	double latitude = 0, longitude = 0, heading = 0, sog = 0, cog = 0, winddir = 0, windspeed = 0;
 	double roll = 0, pitch = 0, yaw = 0.0;
@@ -332,7 +332,7 @@ int main()
 
 	srand(GetTickCount());
 
-	printf("\nUxVSim V10\n");
+	printf("\nUxVSim V11\n");
 	fflush(stdout);
 
 	InitNet();
@@ -377,6 +377,7 @@ int main()
 		switch (robid)
 		{
 		case MOTORBOAT_ROBID:
+		case SPEBOT_ROBID:
 			CreateDefaultThread(PololuInterfaceThread, NULL, &PololuInterfaceThreadId);
 			//CreateDefaultThread(RazorAHRSInterfaceThread, NULL, &RazorAHRSInterfaceThreadId);
 			CreateDefaultThread(SBGInterfaceThread, NULL, &SBGInterfaceThreadId);
@@ -547,6 +548,36 @@ int main()
 			v += vdot*dt;
 			phiPoint += phiPointdot*dt;
 			phi += phidot*dt;
+
+			// Outputs.
+			roll = fmod_2PI(phi+mt_error*(2.0*rand()/(double)RAND_MAX-1.0))*180.0/M_PI;
+			pitch = fmod_2PI(0.0+mt_error*(2.0*rand()/(double)RAND_MAX-1.0))*180.0/M_PI;
+			//yaw = fmod_2PI(theta+M_PI/2.0+mt_error*(2.0*rand()/(double)RAND_MAX-1.0)-M_PI/2.0)*180.0/M_PI; // For Razor (rotated of 90 deg)...
+			yaw = fmod_2PI(theta+mt_error*(2.0*rand()/(double)RAND_MAX-1.0)-M_PI/2.0)*180.0/M_PI; // For SBG...
+			RefCoordSystem2GPS(lat0, long0, 0,
+				x+gps_error*(2.0*rand()/(double)RAND_MAX-1.0),
+				y+gps_error*(2.0*rand()/(double)RAND_MAX-1.0),
+				0,
+				&latitude, &longitude, &dval, EAST_NORTH_UP_COORDINATE_SYSTEM);
+			heading = (fmod_2PI(-((theta)-M_PI/2.0)+M_PI)+M_PI)*180.0/M_PI;
+			sog = sqrt(sqr(xdot)+sqr(ydot))*1.94;
+			cog = fmod_360_pos_rad2deg(-atan2(ydot,xdot)+M_PI/2.0);
+			winddir = (fmod_2PI(-(psi+M_PI-M_PI/2.0)+M_PI)+M_PI)*180.0/M_PI;
+			windspeed = V;
+			break;
+		case SPEBOT_ROBID:
+
+			xdot = vxdot;
+			ydot = vydot;
+			thetadot = (vx*cos(theta)+vy*sin(theta))*sin(deltag)/rg;
+			vxdot = alphav*V*cos(deltag)*cos(theta)-alphaf*(1+fabs(sin(deltag)))*vx;
+			vydot = alphav*V*cos(deltag)*sin(theta)-alphaf*(1+fabs(sin(deltag)))*vy;
+
+			x += xdot*dt;
+			y += ydot*dt;
+			theta += thetadot*dt;
+			vx += vxdot*dt;
+			vy += vydot*dt;
 
 			// Outputs.
 			roll = fmod_2PI(phi+mt_error*(2.0*rand()/(double)RAND_MAX-1.0))*180.0/M_PI;
