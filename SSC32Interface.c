@@ -22,7 +22,7 @@ int handlessc32interfacecli(SOCKET sockcli, void* pParam)
 {
 	char databuf[MAX_BUF_LEN];
 	int pw = 0;
-	double angle = 0.0;
+	double angle = 0, u = 0;
 	FILE* file = NULL;
 	double t = 0.0;
 	CHRONO chrono;
@@ -84,7 +84,23 @@ int handlessc32interfacecli(SOCKET sockcli, void* pParam)
 				// Convert ssc32 pulse width (in us) into angle (in rad).
 				angle = (pw-DEFAULT_MID_PW_SSC32)*(MAX_ANGLE_RUDDER-MIN_ANGLE_RUDDER)/(DEFAULT_MAX_PW_SSC32-DEFAULT_MIN_PW_SSC32);
 				GetTimeElapsedChrono(&chrono, &t);
-				if (fprintf(file, "%f;%f;\n", t, angle) <= 0)
+				if (fprintf(file, "%f;%f;%f;\n", t, angle, u) <= 0)
+				{
+					printf("fprintf() failed.\n");
+					return EXIT_FAILURE;
+				}
+				if (fflush(file) != EXIT_SUCCESS)
+				{
+					printf("fflush() failed.\n");
+					return EXIT_FAILURE;
+				}
+			}
+			else if (sscanf(databuf, "#1P%d\r", &pw) == 1)
+			{
+				// Convert ssc32 pulse width (in us).
+				u = (pw-DEFAULT_MID_PW_SSC32)*2/(DEFAULT_MAX_PW_SSC32-DEFAULT_MIN_PW_SSC32);
+				GetTimeElapsedChrono(&chrono, &t);
+				if (fprintf(file, "%f;%f;%f;\n", t, angle, u) <= 0)
 				{
 					printf("fprintf() failed.\n");
 					return EXIT_FAILURE;

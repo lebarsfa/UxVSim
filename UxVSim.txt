@@ -93,11 +93,11 @@
 0.01
 %0
 % Vc_med (current speed in m/s)
-1
-%0
+0
+%1
 % Vc_var (current speed max variation in m/s)
-1
-%0
+0
+%1
 % psic_med (current direction in rad)
 -1.5
 % psic_var (current direction max variation in rad)
